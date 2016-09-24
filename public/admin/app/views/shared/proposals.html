@@ -1,0 +1,29 @@
+<div class="ibox">
+    <div class="ibox-title">
+        <h5>Proposals</h5>
+    </div>
+    <div class="ibox-content">
+      
+      <div class="row">
+        <div class="col-md-12">
+          <span class="provider" ng-repeat="provider in providers" ng-click="setProvider($index)"
+                ng-hide="provider.type === 'system' && user.testGroupId === 2">
+            <div class="icon" ng-style="{'background-image':'url({{provider.avatar}})'}"></div>
+            <div>{{provider.name}}</div>
+          </span>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-md-12">
+          
+          <div ng-repeat="profession in activeProvider.professions" class="prof-drag-item" data-drag="{{enableAlternativeDrag(profession.name)}}" data-jqyoui-options="{revert: 'invalid'}" ng-model="profession" jqyoui-draggable="{index: {{$index}}, animate:true, onStart: 'traitDrop($index)'}" ng-hide="profession.hide">
+            {{profession.name}}
+            <span class="pull-right" ng-show="{{!enableAlternativeDrag(profession.name)}}"><small>Added</small></span>
+          </div>
+      
+        </div>
+      </div>
+      
+    </div>
+</div>

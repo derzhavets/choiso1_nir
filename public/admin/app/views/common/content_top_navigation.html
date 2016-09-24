@@ -1,0 +1,23 @@
+<!-- Wrapper-->
+<div id="wrapper" class="top-navigation">
+
+    <toaster-container toaster-options="{'time-out': 3000}"></toaster-container>
+    
+    <!-- Navigation -->
+    <div ng-include="'../admin/app/views/common/top_navigation.html'"></div>
+
+    <!-- Page wraper -->
+    <!-- ng-class with current state name give you the ability to extended customization your view -->
+    <div id="page-wrapper" class="gray-bg {{$state.current.name}}">
+
+        <!-- Main view  -->
+        <div ui-view></div>
+
+        <!-- Footer -->
+        <div ng-include="'../admin/app/views/common/footer.html'"></div>
+
+    </div>
+    <!-- End page wrapper-->
+
+</div>
+<!-- End wrapper-->

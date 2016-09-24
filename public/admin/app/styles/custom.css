@@ -1,0 +1,115 @@
+
+.box {
+    position: relative;
+    border-radius: 3px;
+    background: #ffffff;
+    border-top: 3px solid #1ab394;
+    margin-bottom: 20px;
+    width: 100%;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+
+.pointer{
+    cursor: pointer;
+}
+
+
+.scroll {
+  overflow-x: auto;
+}
+
+.btn-file {
+  position: relative;
+  overflow: hidden;
+      background: #1ab393;
+    color: #fff;
+}
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
+}
+
+
+.add-image{
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    width: 200px;
+}
+
+.add-image img{
+    width: 100%;
+}
+
+.top-navigation .wrapper.wrapper-content{
+  padding-top: 10px;
+  padding-top: 10px;
+}
+
+.alternative-row .col-lg-9 span:hover {
+    color: black!important;
+}
+
+.attitude-icon{
+    font-size: 26px;
+    padding: 5px;
+}
+
+.alternative-row {
+    padding: 20px 0px;
+}
+
+.drop-zone{
+    height: 100px;
+    border: 2px dashed #555;
+  border-radius: 8px;
+}
+
+.drop-zone.ui-droppable-hover {
+    border: 2px solid black;
+}
+
+.provider{
+  float: left;
+  text-align: center;
+  font-size: 11px;
+  padding: 10px;
+}
+.provider:hover{
+  background-color: #ccc;
+  border-radius:5px;
+  cursor: pointer;
+}
+.provider .icon {
+    width: 50px;
+    height: 50px;
+    background-size: cover;
+  display: inline-block;
+  border-radius: 50%;
+  
+}
+
+.prof-drag-item {
+    font-size: 18px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+}
+
+.prof-drag-item:hover {
+  border-color: #aaa;
+  cursor: pointer;
+}

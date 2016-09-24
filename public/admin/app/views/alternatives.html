@@ -1,0 +1,112 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <h2>Alternatives</h2>
+    <div class="row">
+        <div class="col-lg-8">
+            
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>{{ alternative.name || 'Select alt...'}}</h5>
+                    <span ng-show="alternative" class="pull-right pointer" ng-click="back()">
+                        <i class="fa fa-caret-left" aria-hidden="true"></i>
+                        Back
+                    </span>
+                    
+                </div>
+                <div class="ibox-content" ng-show="!alternative">
+                    
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <form ng-submit="addAlt()" class="form-inline">
+                                
+                                <div class="form-group">
+                                    <input type="text" ng-model="selectedAlt" class="form-control" id="add" 
+                                           placeholder="Add Alternative" autocomplete="off"
+                                       uib-typeahead="alt.name for alt in altList | filter:$viewValue | limitTo:8">
+                                </div>                             
+                                <button type="submit" class="btn btn-primary">Add</button>
+                                
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="row alternative-row" ng-repeat="alt in alts">
+                        <div class="col-lg-3">
+                            <a href ng-click="removeAlt($index, alt._id)"><i class="fa fa-times-circle-o" aria-hidden="true"></i></a>
+                            <span class="pointer" ng-click="altView(alt)">{{alt.name}}</span>
+                        </div>
+                        <div class="col-lg-9">
+                            <span ng-repeat="n in [] | range:10" class="m-r pointer" 
+                                  ng-click="setScore($parent.$index, n + 1)"
+                                  ng-style="{color: color($parent.$index, n, alt.score - 1)}">
+                                ===
+                            </span>
+                        </div>
+                    </div>
+                  
+                    <div class="row">
+                          <div class="col-lg-12">
+                              <div class="drop-zone" data-drop="true" ng-model="alternativeZone"
+                                   jqyoui-droppable="{animate: true, onDrop: 'traitDrop($index)'}">
+                                  Drop Here
+                              </div>
+                          </div>
+
+                      </div>
+                 
+                </div>
+                
+                
+                <div class="ibox-content" ng-show="alternative">
+                    
+                    <div class="row">
+                        <div class="col-lg-12 text-center">
+                            <button class="btn btn-rounded btn-primary" ng-class="{'btn-outline': !isMyReq}"  ng-click="isMyReq = true">My requirements</button>
+                            <button class="btn btn-rounded btn-primary" ng-class="{'btn-outline': isMyReq}" ng-click="isMyReq = false">Alternative requirements</button>
+                        </div>
+                    </div>
+                    
+                    <div ng-show="isMyReq">
+                      <div class="row">
+                          <div class="col-lg-9">
+                              <h3>Express your current attitude to {{alternative.name}} </h3>
+                          </div>
+                          <div class="col-lg-3">
+                              <i class="fa fa-smile-o pointer attitude-icon" aria-hidden="true" ng-style="{color: alternative.attitude === 3 ? 'green' : 'grey'}" ng-click="setAttitude(3)"></i>
+
+                              <i class="fa fa-meh-o pointer attitude-icon" aria-hidden="true" ng-style="{color: alternative.attitude === 2 ? 'orange' : 'grey'}" ng-click="setAttitude(2)"></i>
+
+                              <i class="fa fa-frown-o pointer attitude-icon" aria-hidden="true" ng-style="{color: alternative.attitude === 1 ? 'red' : 'grey'}" ng-click="setAttitude(1)"></i>
+                          </div>
+
+                      </div>
+                      
+                      <div class="row">
+                          <div class="col-lg-12">
+                              <div class="drop-zone" data-drop="true" ng-model="contactsZone"
+                                   jqyoui-droppable="{animate: true, onDrop: 'contactDrop($index, list.index)'}">
+                                  Drop Here
+                              </div>
+                          </div>
+
+                      </div>
+                      
+                    </div>
+                    
+                    <div class="row" ng-show="!isMyReq">
+                        <div class="col-lg-12">
+                            req...
+                        </div>
+                        
+                    </div>
+                 
+                </div>
+            </div>
+                    
+        </div>   
+        
+        <div class="col-lg-4">
+            <div ng-include="'/admin/app/views/shared/proposals.html'"></div>
+            <div ng-include="'/admin/app/views/shared/contacts.html'"></div>
+        </div>
+    </div>
+</div>

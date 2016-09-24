@@ -1,0 +1,44 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <h2>Profile</h2>
+    <div class="row">
+        <div class="col-lg-12">
+           <div class="row m-b-lg m-t-lg">
+                <div class="col-md-6">
+
+                    <div class="profile-image">
+                        <img ng-src="{{ user.avatar || '../../../assets/img/empty-profile.jpg'}}" 
+                             class="img-circle circle-border m-b-md" alt="profile">
+                    </div>
+                    <div class="profile-info">
+                        <div class="">
+                            <div>
+                                <h2 class="no-margins">
+                                    {{profile.displayName}}
+                                </h2>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="input-group m-l-n m-t-lg">
+                                            <span class="input-group-btn">
+                                                <span class="btn btn-file">
+                                                    {{uploadText}}&hellip; 
+                                                    <i class="fa fa-circle-o-notch fa-spin" ng-show="uploading"></i>
+                                                    <input type="file" file-model='image' />
+                                                </span>
+                                            </span>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        
+    </div>
+</div>

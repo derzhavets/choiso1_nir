@@ -1,0 +1,40 @@
+<div class="row border-bottom white-bg">
+    <nav class="navbar navbar-static-top" role="navigation">
+        <div class="navbar-header">
+            <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+                <i class="fa fa-reorder"></i>
+            </button>
+            <a href class="navbar-brand" ui-sref="app.dashboard">Choiso</a>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar">
+            <ul class="nav navbar-nav">
+                
+                <li ui-sref-active="active">
+                    <a ui-sref="app.dashboard"><span class="nav-label">Dashboard</span> </a>
+                </li>
+                
+                <li ui-sref-active="active">
+                    <a ui-sref="app.alternatives"><span class="nav-label">Alternatives</span> </a>
+                </li>
+                
+
+
+
+            </ul>
+            <ul class="nav navbar-top-links navbar-right">
+                <li uib-dropdown>
+                    <a href uib-dropdown-toggle> {{user.displayName}} <span class="caret"></span></a>
+                    <ul role="menu" uib-dropdown-menu>
+                        <li><a ui-sref="app.profile">Profile</a></li>
+                        <li>
+                            <a href="" ng-click="logout()">
+                                <i class="fa fa-sign-out"></i> Log out
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                
+            </ul>   
+        </div>
+    </nav>
+</div>
