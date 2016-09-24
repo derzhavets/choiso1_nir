@@ -1,0 +1,21 @@
+# Logs
+logs
+*.log
+
+xx
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Compiled binary addons (http://nodejs.org/api/addons.html)
+build/Release
+
+# Dependency directory
+node_modules
+public/bower_components
+# Users Environment Variables
+.lock-wscript
+app
+.env

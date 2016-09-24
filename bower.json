@@ -1,0 +1,39 @@
+{
+  "name": "choiso-app",
+  "version": "1.0.0",
+  "authors": [
+    "Nir Berenstein - nirber1@gmail.com"
+  ],
+  "description": "Deal Value Admin",
+  "main": "public/views/app/admin-index.html",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "appPath": "public/admin/app",
+  "dependencies": {
+    "angular-animate": "~1.5.0",
+    "angular-sanitize": "~1.5.0",
+    "angular-aria": "~1.5.0",
+    "jquery": "~2.1.4",
+    "angular-ui-router": "~0.2.15",
+    "bootstrap": "~3.3.6",
+    "angular-bootstrap": "~1.1.2",
+    "moment": "~2.10.6",
+    "animate.css": "~3.4.0",
+    "angular": "~1.5.0",
+    "pace": "~1.0.2",
+    "metisMenu": "~2.0.2",
+    "fontawesome": "~4.5.0",
+    "ng-table": "~1.0.0",
+    "ngSweetAlert": "angular-sweetalert#~1.1.1",
+    "AngularJS-Toaster": "angularjs-toaster#~2.0.0",
+    "angular-dragdrop": "~1.0.13"
+  },
+  "resolutions": {
+    "jquery": "~2.1.4",
+    "angular": "~1.5.0"
+  }
+}
