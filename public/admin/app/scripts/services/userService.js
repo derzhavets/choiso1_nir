@@ -1,9 +1,10 @@
-angular.module('choiso').service('User', function($http) {
+angular.module('choiso').service('User', function($http, $rootScope) {
 
   var user = undefined;
   
   var set = function(data) {
     user = data;
+    $rootScope.$emit("userUpdate", {});
   };
 
   var isLoggedIn = function(){    
@@ -13,13 +14,17 @@ angular.module('choiso').service('User', function($http) {
 
   var get = function(){
     if(isLoggedIn()) return user;
+    else return false;
+    /*
+    if(isLoggedIn()) return user;
     return $http.get('/api/users/me').then(function (response) {
         user = response.data;
         return user;
       
       }, function (response) {
         return false;
-      });
+      });*/
+    
   };
   
   var update = function(data, cb){

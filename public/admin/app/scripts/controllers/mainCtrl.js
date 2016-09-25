@@ -2,6 +2,10 @@
 angular.module('choiso').controller('mainCtrl', function ($scope, $rootScope, $state, $http, User) {
 
     $scope.user = User.get();
+    
+    $rootScope.$on("userUpdate", function(){
+      $scope.user = User.get();
+    });
   
     $scope.logout = function(){
         console.log('out');
