@@ -8,7 +8,6 @@
         'ui.bootstrap',
         'ngTable',
         'oitozero.ngSweetAlert',
-        'ui.select',
         'ngSanitize',
         'toaster', 
         'ngAnimate',
