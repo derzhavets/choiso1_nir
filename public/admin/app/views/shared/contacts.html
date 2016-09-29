@@ -1,4 +1,4 @@
-<div class="ibox" ng-controller="friendsCtrl">
+<div class="ibox" ng-controller="friendsCtrl"> <!-- ng-show="showContacts">-->
   <div class="ibox-title">
     <h5>Friends</h5>
   </div>
@@ -8,7 +8,8 @@
       <div uib-accordion-group class="panel-default" heading="{{list.name}}"  
            ng-repeat="list in appData.contacts" ng-show="list.list && list.list.length > 0">
         
-        <div ng-repeat="contact in list.list" class="prof-drag-item" data-drag="{{enableContactDrag(contact._id)}}" data-jqyoui-options="{revert: 'invalid'}" ng-model="contact" jqyoui-draggable="{index: {{$index}}, animate:true, onStart: 'contactDrop($index, list.index)'}" ng-hide="contact.hide">
+        <div ng-repeat="contact in list.list" class="prof-drag-item" data-drag="{{enableContactDrag(contact._id)}} && activeDrag === 'contact'" data-jqyoui-options="{revert: 'invalid'}" ng-model="contact" jqyoui-draggable="{index: {{$index}}, animate:true, onStart: 'contactDrop($index, list.index)'}" ng-hide="contact.hide">
+          <div class="contact-icon" ng-style="{'background-image':'url({{contact.avatar}})'}"></div>
           {{contact.displayName}}
           <span class="pull-right" ng-show="{{!enableContactDrag(contact._id)}}"><small>Added</small></span>
         </div>

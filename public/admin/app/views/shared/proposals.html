@@ -17,9 +17,9 @@
       <div class="row">
         <div class="col-md-12">
           
-          <div ng-repeat="profession in activeProvider.professions" class="prof-drag-item" data-drag="{{enableAlternativeDrag(profession.name)}}" data-jqyoui-options="{revert: 'invalid'}" ng-model="profession" jqyoui-draggable="{index: {{$index}}, animate:true, onStart: 'traitDrop($index)'}" ng-hide="profession.hide">
+          <div ng-repeat="profession in activeProvider.professions" class="prof-drag-item" data-drag="!profession.added && activeDrag === 'proposal'" data-jqyoui-options="{revert: 'invalid'}" ng-model="profession" jqyoui-draggable="{index: {{$index}}, animate:true, onStart: 'traitDrop($index)', placeholder: 'keep'}">
             {{profession.name}}
-            <span class="pull-right" ng-show="{{!enableAlternativeDrag(profession.name)}}"><small>Added</small></span>
+            <span class="pull-right" ng-show="profession.added"><small>Added</small></span>
           </div>
       
         </div>

@@ -113,3 +113,13 @@
   border-color: #aaa;
   cursor: pointer;
 }
+
+.contact-icon{
+  width: 28px;
+    height: 28px;
+    float: left;
+    border-radius: 50%;
+    background-size: cover;
+    border: 1px solid #ccc;
+    margin-right: 5px;
+}

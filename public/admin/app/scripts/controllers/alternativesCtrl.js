@@ -3,6 +3,8 @@ angular.module('choiso').controller('alternativesCtrl', function ($scope, $rootS
 
     console.log('== Alternative ==');
     
+    $scope.activeDrag = 'proposal';
+  
     $scope.appData = Data.get();
     console.log($scope.appData);
   
@@ -10,7 +12,7 @@ angular.module('choiso').controller('alternativesCtrl', function ($scope, $rootS
     console.log($scope.user);
     
     // is "my" requirements" (critical points) page
-    $scope.isMyReq = true;
+    $scope.isMyReq = false;
   
     // chosen alternative
     $scope.alternative = undefined;
@@ -73,12 +75,12 @@ angular.module('choiso').controller('alternativesCtrl', function ($scope, $rootS
     
     $scope.altView = function(alt){
         $scope.alternative = alt;
-        $scope.isMyReq = true;
+        $scope.isMyReq = false;
     };
     
     $scope.back = function(){
         $scope.alternative = undefined;
-        $scope.isMyReq = true;
+        $scope.isMyReq = false;
     };
     
     $scope.setScore = function(i, score){
@@ -122,6 +124,7 @@ angular.module('choiso').controller('alternativesCtrl', function ($scope, $rootS
                 $scope.alts.splice(i, 1);
                 $http.delete('/api/alternatives/' + id).then(function (response) {
                     $scope.alts = response.data;
+                    setProfAdded();
                   }, function (response) {
                     toaster.pop('warning', "Something Went Wrong");
                   });
@@ -146,8 +149,14 @@ angular.module('choiso').controller('alternativesCtrl', function ($scope, $rootS
         else {
           console.log($scope.alternativeZone);
           $scope.addAlt($scope.alternativeZone.name);
+          var items = $scope.activeProvider.professions;
+          //$scope.activeProvider.professions.splice(index,1);
+          //$scope.activeProvider.professions.splice(index, 0 , $scope.alternativeZone)
           $scope.alternativeZone = undefined;
-          $scope.activeProvider.professions.splice(index,1);
+          $scope.activeProvider.professions = [];
+          $scope.activeProvider.professions = items;
+          $scope.activeProvider.professions[index].added = true;
+          console.log($scope.activeProvider.professions)
         }
         
     };
@@ -190,7 +199,16 @@ angular.module('choiso').controller('alternativesCtrl', function ($scope, $rootS
     
     $scope.setProvider = function(i){
         $scope.activeProvider = $scope.providers[i];
+        setProfAdded();
     };
+  
+    function setProfAdded(){
+      if($scope.activeProvider && $scope.activeProvider.professions){
+        for(var i = 0 ; i < $scope.activeProvider.professions.length ; i++){
+          $scope.activeProvider.professions[i].added = !$scope.enableAlternativeDrag($scope.activeProvider.professions[i].name);
+        }
+      }
+    }
     
 
 });
