@@ -38,6 +38,14 @@ angular.module('choiso').config(function ($stateProvider, $urlRouterProvider, $l
             data: { pageTitle: 'Alternatives ' }
         })
     
+        // communications 
+        .state('app.communications', {
+            url: "/communications",
+            templateUrl: "admin/app/views/communications.html",
+            controller: 'communicationsCtrl',
+            data: { pageTitle: 'Communications ' }
+        })
+    
     
         // Users
         .state('app.profile', {

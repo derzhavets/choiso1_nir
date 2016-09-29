@@ -1,0 +1,55 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <h2>Communications</h2>
+    <div class="row">
+        <div class="col-lg-8">
+            
+            <div class="ibox" ng-repeat="req in requests">
+                <div class="ibox-title">
+                    <h5>{{ req.from.displayName + ' Requests For ' + req.section}}</h5>
+                    <span class="pull-right pointer" ng-click="submit($index)" ng-disable="submitting">
+                        {{ submitting ? 'Submitting...' : 'Submit'}}
+                    </span>
+                </div>
+                <div class="ibox-content">
+                    
+                  <div class="row m-b">
+                    <div class="col-md-12">
+                      <h2 ng-show="req.from.alternatives">{{ req.from.firstName + "'s " + req.section}}</h2>
+                      <span class="alt-tag" ng-repeat="alt in req.from.alternatives">{{alt.name}}</span>
+                    </div>
+                  </div>
+                
+                  <h2 ng-show="req.from.alternatives">{{ 'Proposed ' + req.section}}</h2>
+                  <div class="row">
+                      <div class="col-lg-6">
+                          <form ng-submit="addAlt($index, req.add)" class="form-inline">
+
+                              <div class="form-group">
+                                  <input type="text" ng-model="req.add" class="form-control" id="add" 
+                                         placeholder="Add Alternative" autocomplete="off"
+                                     uib-typeahead="alt.name for alt in altList | filter:$viewValue | limitTo:8">
+                              </div>                             
+                              <button type="submit" class="btn btn-primary">Add</button>
+
+                          </form>
+                      </div>
+                  </div>
+                  
+                  <div class="row alternative-row" ng-repeat="alt in req.alternatives">
+                    <div class="col-lg-3">
+                        <a href ng-click="removeAlt($index, $parent.$index)"><i class="fa fa-times-circle-o" aria-hidden="true"></i></a>
+                        <span>{{alt.name}}</span>
+                    </div>
+                  </div>
+                 
+                </div>
+            </div>
+                    
+        </div>   
+        
+        <div class="col-lg-4" ng-show="false">
+            <div ng-include="'/admin/app/views/shared/proposals.html'" ng-show="!askAlternatives"></div>
+            <div ng-include="'/admin/app/views/shared/contacts.html'" ng-show="askAlternatives"></div>
+        </div>
+    </div>
+</div>
