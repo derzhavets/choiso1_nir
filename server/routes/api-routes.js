@@ -4,6 +4,7 @@ var users = require('../controllers/userCtrl'),
     alternatives = require('../controllers/alternativeCtrl'),
     recents = require('../controllers/recentsCtrl'),
     general = require('../controllers/generalCtrl'),
+    requests = require('../controllers/requestsCtrl'),
     express = require('express'),
     multer  = require('multer'),
     router = express.Router();
@@ -40,6 +41,15 @@ module.exports = function(passport) {
     // recents 
     router.route('/contacts/add-recent/:id')
         .post(isLoggedIn, recents.add);
+
+    // requests 
+    router.route('/requests')
+        .get(isLoggedIn, requests.list)
+        .post(isLoggedIn, requests.create);
+
+    router.route('/requests/:section')
+        .put(isLoggedIn, requests.update)
+        .get(isLoggedIn, requests.listBySection);
 
     
     // login

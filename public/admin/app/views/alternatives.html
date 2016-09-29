@@ -5,8 +5,8 @@
             
             <div class="ibox">
                 <div class="ibox-title">
-                    <h5>{{ alternative.name || 'Select alt...'}}</h5>
-                    <span ng-show="alternative" class="pull-right pointer" ng-click="back()">
+                    <h5>{{ alternative.name || title}}</h5>
+                    <span ng-show="alternative || askAlternatives" class="pull-right pointer" ng-click="back()">
                         <i class="fa fa-caret-left" aria-hidden="true"></i>
                         Back
                     </span>
@@ -14,21 +14,22 @@
                 </div>
                 <div class="ibox-content" ng-show="!alternative">
                     
+                  <div ng-show="!askAlternatives">
                     <div class="row">
                         <div class="col-lg-6">
                             <form ng-submit="addAlt()" class="form-inline">
-                                
+
                                 <div class="form-group">
                                     <input type="text" ng-model="selectedAlt" class="form-control" id="add" 
                                            placeholder="Add Alternative" autocomplete="off"
                                        uib-typeahead="alt.name for alt in altList | filter:$viewValue | limitTo:8">
                                 </div>                             
                                 <button type="submit" class="btn btn-primary">Add</button>
-                                
+
                             </form>
                         </div>
                     </div>
-                    
+
                     <div class="row alternative-row" ng-repeat="alt in alts">
                         <div class="col-lg-3">
                             <a href ng-click="removeAlt($index, alt._id)"><i class="fa fa-times-circle-o" aria-hidden="true"></i></a>
@@ -42,19 +43,73 @@
                             </span>
                         </div>
                     </div>
-                  
-                    <div class="row">
-                          <div class="col-lg-12">
-                              <div class="drop-zone" data-drop="true" ng-model="alternativeZone"
-                                   jqyoui-droppable="{animate: true, onDrop: 'traitDrop($index)'}">
-                                  Drop Here
-                              </div>
-                          </div>
 
+                    <div class="row m-b">
+                      <div class="col-lg-12" ng-show="!askAlternatives">
+                          <div class="drop-zone" data-drop="true" ng-model="alternativeZone"
+                               jqyoui-droppable="{animate: true, onDrop: 'traitDrop($index)'}">
+                              Drop Proposals Here
+                          </div>
                       </div>
+                    </div>
+
+                    <div class="row m-b">
+                      <div class="col-lg-12 text-center">
+                        <button ng-click="requestAlternativesView()" class="btn btn-primary">Ask Friends For Alternatives</button>
+                      </div>
+
+
+                    </div>
+                  </div>
+                  
+                  <div ng-show="askAlternatives">
+               
+                    <div class="row m-b" ng-show="requestedAlternativesArr.length > 0">
+                      <div class="col-lg-12">
+                        <h2>Requests Sent To:</h2>
+                        <span class="provider" ng-repeat="contact in requestedAlternativesArr">
+                          <div class="icon" ng-style="{'background-image':'url({{contact.avatar}})'}"></div>
+                          <div>{{contact.displayName}}</div>
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div class="row m-b">
+                      <div class="col-lg-12">
+                        <div class="drop-zone m-b" data-drop="true" ng-model="contactsZone"
+                             jqyoui-droppable="{animate: true, onDrop: 'contactDrop($index, list.index)'}">
+                            Drop Contacts Here
+                        </div>
+                      </div>
+                      
+                      <div class="col-lg-12" ng-show="altRequestArr.length > 0">
+                        <h2>Send Request To:</h2>
+                        <span class="provider" ng-repeat="contact in altRequestArr" ng-click="setProvider($index)">
+                          <div class="icon" ng-style="{'background-image':'url({{contact.avatar}})'}"></div>
+                          <div>{{contact.displayName}}</div>
+                        </span>
+                      </div>
+                        
+                      
+                      <div class="col-lg-12">
+                        <form ng-submit="sendAlternativeRequest(showMyAlts)">
+                          <div class="checkbox checkbox-inline">
+                            <input type="checkbox" id="showAsk" ng-model="showMyAlts">
+                            <label for="showAsk">
+                                Show My Current Alternatives
+                            </label>
+                          </div>
+                          <button type="submit" class="btn btn-primary">
+                            Send Requests
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
                  
                 </div>
-                
+              
+              
                 
                 <div class="ibox-content" ng-show="alternative">
                     
@@ -84,11 +139,13 @@
                           <div class="col-lg-12">
                               <div class="drop-zone" data-drop="true" ng-model="contactsZone"
                                    jqyoui-droppable="{animate: true, onDrop: 'contactDrop($index, list.index)'}">
-                                  Drop Here
+                                  Drop  Here
                               </div>
                           </div>
 
                       </div>
+                      
+                      
                       
                     </div>
                     
@@ -105,8 +162,8 @@
         </div>   
         
         <div class="col-lg-4">
-            <div ng-include="'/admin/app/views/shared/proposals.html'"></div>
-            <div ng-include="'/admin/app/views/shared/contacts.html'"></div>
+            <div ng-include="'/admin/app/views/shared/proposals.html'" ng-show="!askAlternatives"></div>
+            <div ng-include="'/admin/app/views/shared/contacts.html'" ng-show="askAlternatives"></div>
         </div>
     </div>
 </div>

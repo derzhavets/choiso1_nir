@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
     Requirement = require('../models/requirement'),
     User = require('../models/user'),
     Provider = require('../models/provider'),
+    Request = require('../models/request'),
     extend = require('extend'),
     config = require('../../config');
 
@@ -33,6 +34,15 @@ exports.start = function(req,res){
       finish();
     });
   
+    Request.find().lean()
+      .where('from').equals(req.user._id)
+      .where('answered').exists(true)
+      .populate('to', 'displayName avatar')
+      .exec(function(err, model){
+        data.requests = model;
+        finish();
+      });
+  
     User.find().lean()
       .where('family').equals(req.user._id)
       .exec(function(err, model){
@@ -42,6 +52,7 @@ exports.start = function(req,res){
   
     User.find().lean()
       .where('family').exists(false)
+      .where('_id').ne(req.user._id)
       .exec(function(err, model){
         data.network = model;
         finish();
@@ -56,9 +67,10 @@ exports.start = function(req,res){
   
   function finish(){
     counter++;
-    if(counter === 6) {
+    if(counter === 7) {
       setData();
       setContact();
+      setRequests();
       res.json(data);
     }
   }
@@ -76,6 +88,28 @@ exports.start = function(req,res){
         if(provider.id === trait.providerId) tra.push(trait);
       });
       data.providers[i].traits = tra;
+    });
+  }
+  
+  function setRequests(){
+    data.requests.forEach(function(request, i){
+      
+      request.name = request.to.displayName;
+      request.avatar = request.to.avatar;
+      request.professions = [];
+      
+      request.alternatives.forEach(function(alt){
+        request.professions.push({
+          name: alt.name,
+          _id: alt._id,
+          providerId: request.to._id,
+          providerId: request.to._id,
+          requirements: []
+        })
+      });
+      
+      data.providers.push(request);
+        
     });
   }
   function setContact(){
