@@ -22,8 +22,10 @@
                                             <span class="input-group-btn">
                                                 <span class="btn btn-file">
                                                     {{uploadText}}&hellip; 
-                                                    <i class="fa fa-circle-o-notch fa-spin" ng-show="uploading"></i>
-                                                    <input type="file" file-model='image' />
+                                                    <span ng-show="uploading">
+                                                      <i class="fa fa-circle-o-notch fa-spin"></i>
+                                                    </span>
+                                                    <input type="file" file-model='image' accept="image/*"/>
                                                 </span>
                                             </span>
 

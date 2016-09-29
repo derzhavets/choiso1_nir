@@ -5,8 +5,11 @@ var users = require('../controllers/userCtrl'),
     recents = require('../controllers/recentsCtrl'),
     general = require('../controllers/generalCtrl'),
     express = require('express'),
+    multer  = require('multer'),
     router = express.Router();
 
+var storage = multer.memoryStorage()
+var upload = multer({ storage: storage })
 
 module.exports = function(passport) {
 
@@ -20,11 +23,11 @@ module.exports = function(passport) {
     
     // users 
     router.route('/users/me')
-        .get(isLoggedIn, users.me);
-
-    router.route('/users/:usersId')
+        .get(isLoggedIn, users.me)
         .put(isLoggedIn, users.update);
-        //.delete(isLoggedIn, users.delete);
+
+    router.route('/users/me/update-image')
+        .put(isLoggedIn, upload.single('avatar'), users.updateImage);
 
     // alternatives 
     router.route('/alternatives')

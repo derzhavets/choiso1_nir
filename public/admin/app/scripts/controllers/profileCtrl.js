@@ -13,11 +13,12 @@ angular.module('choiso').controller('profileCtrl', function (profile, User, $sco
     $scope.profile.displayName = $scope.profile.firstName + ' ' + $scope.profile.lastName;
   
     // add or edit item
-    $scope.update = function(){
+    $scope.updateImage = function(){
         
         $scope.uploading = true;
-        User.update($scope.profile, function(err, user){
+        User.updateImage($scope.image, function(err, user){
           $scope.uploading = false;
+          $scope.uploadText = 'Change Avatar';
           if(err) return $scope.uploadText = 'Something Went Wrong';
           $scope.profile = user;
         
@@ -36,7 +37,7 @@ angular.module('choiso').controller('profileCtrl', function (profile, User, $sco
                 $scope.profile.avatar = reader.result;
                 console.log($scope.item);
                 $scope.$apply();
-                $scope.update();
+                $scope.updateImage();
             }
             reader.readAsDataURL(file);
         }

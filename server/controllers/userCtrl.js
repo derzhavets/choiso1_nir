@@ -4,6 +4,7 @@ var mongoose = require('mongoose'),
     //_ = require('lodash'),
     cloudinary = require('cloudinary'),
     User = require('../models/user'),
+    data_uri = require('data-uri'),
     config = require('../../config');
 
 
@@ -16,6 +17,31 @@ exports.me = function(req,res){
 };
 
 
+// update current user image
+exports.updateImage = function(req,res){
+        
+    var user = req.user;
+    console.log(req.file);
+    
+    // upload image cloudinary
+    var file = data_uri.render(req.file.mimetype, req.file.buffer);
+    cloudinary.uploader.upload(file, function(result) { 
+        console.log(result);
+        user.avatar = result.url;
+        save();
+    });
+   
+        
+    function save(){
+        user.save(function(err){
+           if(err) return res.sendStatus(500);
+           res.json(user);
+        });
+    }
+        
+    
+};
+
 // update current user
 exports.update = function(req,res){
         
@@ -23,18 +49,8 @@ exports.update = function(req,res){
     
     // update fields
     user.displayName = req.body.displayName;
-        
-    // upload image cloudinary
-    if(req.body.avatar && req.body.avatar.search('data:image') > -1){
-        cloudinary.uploader.upload(req.body.avatar, function(result) { 
-            console.log(result);
-            user.avatar = result.url;
-            save();
-        });
-    } else { 
-        save();
-    }
-        
+    save();      
+  
     function save(){
         user.save(function(err){
            if(err) return res.sendStatus(500);

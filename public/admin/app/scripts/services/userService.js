@@ -1,4 +1,4 @@
-angular.module('choiso').service('User', function($http, $rootScope) {
+angular.module('choiso').service('User', function($http, $rootScope, $httpParamSerializer) {
 
   var user = undefined;
   
@@ -27,8 +27,17 @@ angular.module('choiso').service('User', function($http, $rootScope) {
     
   };
   
-  var update = function(data, cb){
-    $http.put('/api/users/me', data).then(function (response) {
+  var updateImage = function(data, cb){
+    
+    var formData = new FormData();
+    formData.append('avatar', data, data.name);
+
+    $http({
+      url: '/api/users/me/update-image',
+      method: 'PUT',
+      data: formData, 
+      headers: {'Content-Type':  undefined}
+    }).then(function (response) {
         user = response.data;
         cb(null, user);
       }, function (response) {
@@ -39,7 +48,7 @@ angular.module('choiso').service('User', function($http, $rootScope) {
   return {
     get: get,
     set: set,
-    update : update,
+    updateImage : updateImage,
     isLoggedIn : isLoggedIn
   };
 });
