@@ -43,6 +43,12 @@ exports.start = function(req,res){
         finish();
       });
   
+    Requirement.find().lean()
+      .exec(function(err, model){
+        data.requirements = model;
+        finish();
+      });
+    
     User.find().lean()
       .where('family').equals(req.user._id)
       .exec(function(err, model){
@@ -67,7 +73,7 @@ exports.start = function(req,res){
   
   function finish(){
     counter++;
-    if(counter === 7) {
+    if(counter === 8) {
       setData();
       setContact();
       setRequests();
@@ -99,18 +105,43 @@ exports.start = function(req,res){
       request.professions = [];
       
       request.alternatives.forEach(function(alt){
-        request.professions.push({
-          name: alt.name,
-          _id: alt._id,
-          providerId: request.to._id,
-          providerId: request.to._id,
-          requirements: []
-        })
+        
+        if(request.section === 'alternatives'){
+          request.professions.push({
+            name: alt.name,
+            _id: alt._id,
+            providerId: request.to._id,
+            requirements: getReqs(alt.name, request.to._id)
+          });
+        }
+        
       });
       
       data.providers.push(request);
-        
+      
     });
+    
+    function getReqs(name, id){
+        var arr = [];
+        data.requests.forEach(function(request, i){
+          if(request.section === 'requirements'){
+            request.requirements.forEach(function(r){
+                  console.log(name, id);
+                  console.log(r.parent, r.providerId);
+                if(r.parent == name && r.providerId == id) {
+                  console.log('match');
+                  arr.push({
+                    name: r.name,
+                    providerId: r.providerId,
+                  });
+                }
+            });
+          }
+        });
+      return arr;
+    }
+    
+    
   }
   function setContact(){
     

@@ -58,7 +58,7 @@
   padding-top: 10px;
 }
 
-.alternative-row .col-lg-9 span:hover {
+.alternative-row .col-lg-9 span:hover, .hover-black span:hover {
     color: black!important;
 }
 

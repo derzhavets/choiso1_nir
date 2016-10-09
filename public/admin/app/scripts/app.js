@@ -11,6 +11,7 @@
         'ngSanitize',
         'toaster', 
         'ngAnimate',
-        'ngDragDrop'
+        'ngDragDrop',
+        'chart.js'
     ])
 })();

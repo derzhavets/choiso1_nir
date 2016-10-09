@@ -57,9 +57,8 @@
                       <div class="col-lg-12 text-center">
                         <button ng-click="requestAlternativesView()" class="btn btn-primary">Ask Friends For Alternatives</button>
                       </div>
-
-
                     </div>
+                      
                   </div>
                   
                   <div ng-show="askAlternatives">
@@ -149,11 +148,199 @@
                       
                     </div>
                     
+                  
                     <div class="row" ng-show="!isMyReq">
-                        <div class="col-lg-12">
-                            req...
+                      
+                      <div ng-show="!askRequirements && !askRequirementsEval">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <form ng-submit="addReq(selectedReq)" class="form-inline">
+
+                                    <div class="form-group">
+                                        <input type="text" ng-model="selectedReq" class="form-control" id="add" 
+                                               placeholder="Add Requirement" autocomplete="off"
+                                           uib-typeahead="req.name for req in appData.requirements | filter:$viewValue | limitTo:8">
+                                    </div>                             
+                                    <button type="submit" class="btn btn-primary">Add</button>
+
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="row alternative-row" ng-repeat="req in alternative.requirements">
+                          <div class="col-lg-3">
+                              <a href ng-click="removeReq($index, req._id)"><i class="fa fa-times-circle-o" aria-hidden="true"></i></a>
+                              <span>{{req.name}}</span>
+                          </div>
+                          <div class="col-lg-8">
+                              <span class="m-r pointer" ng-click="setReqScore($parent.$index, $index, req, -2)" 
+                                    ng-style="{color: req.score === -2 ? 'red' : 'grey'}">
+                                  ===
+                              </span>
+                              <span class="m-r pointer" ng-click="setReqScore($parent.$index, $index, req, -1)" 
+                                    ng-style="{color: req.score <= -1 ? 'red' : 'grey'}">
+                                  ===
+                              </span>
+                              <span class="m-r pointer" ng-click="setReqScore($parent.$index, $index, req, 1)" 
+                                    ng-style="{color: req.score >= 1 ? 'green' : 'grey'}">
+                                  ===
+                              </span>
+                              <span class="m-r pointer" ng-click="setReqScore($parent.$index, $index, req, 2)" 
+                                    ng-style="{color: req.score === 2 ? 'green' : 'grey'}">
+                                  ===
+                              </span>
+                          </div>
+                          <div class="col-lg-1">
+                            <i class="fa fa-caret-down fa-2x" ng-click="req.open = true; setEvalData($index, req.evals)" ng-show="!req.open"></i>
+                            <i class="fa fa-caret-up fa-2x" ng-click="req.open = false" ng-show="req.open"></i>
+                          </div>
+                          <div class="col-lg-12" ng-show="req.open">
+                            <div class="col-lg-3">
+                              <!--<div ac-chart="'pie'" ac-data="chartData" ac-config="config" id="chart" class="chart"></div>-->
+                              <canvas id="{{'chart' + $index}}" class="chart chart-pie"
+                                chart-data="req.evalScores" chart-labels="chart.labels" chart-click="chart.click" chart-options="chart.options" chart-colors="chart.colors">
+                              </canvas> 
+                            </div>
+                            <div class="col-lg-9">
+                              <div class="row" ng-repeat="eval in req.evals" 
+                                   ng-show="req.showScore === eval.score || !req.showScoreFilter">
+                                <div class="col-lg-1"> 
+                                  <div class="contact-icon" ng-style="{'background-image':'url({{getEvalFace(eval.user)}})'}"></div>
+                                </div>
+                                <div class="col-lg-3"> {{getEvalName(eval.user)}} </div>
+                                <div class="col-lg-8"> 
+                                  <span class="m-r" ng-style="{color: eval.score === -2 ? 'red' : 'grey'}">
+                                      ===
+                                  </span>
+                                  <span class="m-r" ng-style="{color: eval.score <= -1 ? 'red' : 'grey'}">
+                                      ===
+                                  </span>
+                                  <span class="m-r" ng-style="{color: eval.score >= 1 ? 'green' : 'grey'}">
+                                      ===
+                                  </span>
+                                  <span class="m-r" ng-style="{color: eval.score === 2 ? 'green' : 'grey'}">
+                                      ===
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                        </div>
+                      
+                        <div class="row m-b">
+                          <div class="col-lg-12" ng-show="!askRequirements && !askRequirementsEval">
+                              <div class="drop-zone" data-drop="true" ng-model="reqZone"
+                                   jqyoui-droppable="{animate: true, onDrop: 'reqDrop($index)'}">
+                                  Drop Requirements Here
+                              </div>
+                          </div>
                         </div>
                         
+                        <div class="row m-b">
+                          <div class="col-lg-12 text-center">
+                            <button ng-click="requestRequirementsView()" class="btn btn-primary">Ask Friends For Requirements</button>
+                            <button ng-click="requestRequirementsEvalView()" class="btn btn-primary">Ask Friends For Evaluation</button>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- ask reqs -->
+                      <div ng-show="askRequirements">
+                        
+                        <div class="row m-b" ng-show="requestedRequirementsArr.length > 0">
+                          <div class="col-lg-12">
+                            <h2>Requests Sent To:</h2>
+                            <span class="provider" ng-repeat="contact in requestedRequirementsArr">
+                              <div class="icon" ng-style="{'background-image':'url({{contact.avatar}})'}"></div>
+                              <div>{{contact.displayName}}</div>
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div class="row m-b">
+                          
+                          <div class="col-lg-12">
+                            <div class="drop-zone m-b" data-drop="true" ng-model="contactsZone"
+                                 jqyoui-droppable="{animate: true, onDrop: 'contactDrop($index, list.index)'}">
+                                Drop Contacts Here
+                            </div>
+                          </div>
+                          
+                          <div class="col-lg-12" ng-show="reqRequestArr.length > 0">
+                            <h2>Send Request To:</h2>
+                            <span class="provider" ng-repeat="contact in reqRequestArr" ng-click="setProvider($index)">
+                              <div class="icon" ng-style="{'background-image':'url({{contact.avatar}})'}"></div>
+                              <div>{{contact.displayName}}</div>
+                            </span>
+                          </div>
+                          
+                          <div class="col-lg-12">
+                            <form ng-submit="sendRequirementsRequest(showMyReqs)" ng-show="askRequirements">
+                              <!--<div class="checkbox checkbox-inline">
+                                <input type="checkbox" id="showAsk" ng-model="showMyReqs">
+                                <label for="showAsk">
+                                    Show My Current Requirements
+                                </label>
+                              </div>-->
+                              <button type="submit" class="btn btn-primary">
+                                Send Requests
+                              </button>
+                            </form>
+                          </div>
+                          
+                        </div>
+                        
+                      </div>
+                      
+                      <!-- ask reqs evals -->
+                      <div ng-show="askRequirementsEval">
+               
+                        <div class="row m-b" ng-show="requestedRequirementsEvalArr.length > 0">
+                          <div class="col-lg-12">
+                            <h2>Requests Sent To:</h2>
+                            <span class="provider" ng-repeat="contact in requestedRequirementsEvalArr">
+                              <div class="icon" ng-style="{'background-image':'url({{contact.avatar}})'}"></div>
+                              <div>{{contact.displayName}}</div>
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div class="row m-b">
+                          
+                          <div class="col-lg-12">
+                            <div class="drop-zone m-b" data-drop="true" ng-model="contactsZone"
+                                 jqyoui-droppable="{animate: true, onDrop: 'contactDrop($index, list.index)'}">
+                                Drop Contacts Here
+                            </div>
+                          </div>
+                          
+                          <div class="col-lg-12" ng-show="reqRequestEvalArr.length > 0">
+                            <h2>Send Request To:</h2>
+                            <span class="provider" ng-repeat="contact in reqRequestEvalArr" ng-click="setProvider($index)">
+                              <div class="icon" ng-style="{'background-image':'url({{contact.avatar}})'}"></div>
+                              <div>{{contact.displayName}}</div>
+                            </span>
+                          </div>
+                          
+                          <div class="col-lg-12">
+                            <form ng-submit="sendRequirementsEvalRequest(showMyEvals)" ng-show="askRequirementsEval">
+                              <div class="checkbox checkbox-inline">
+                                <input type="checkbox" id="showAsk" ng-model="showMyEvals">
+                                <label for="showAsk">
+                                    Show My Current Evaluations
+                                </label>
+                              </div>
+                              <button type="submit" class="btn btn-primary">
+                                Send Requests
+                              </button>
+                            </form>
+                          </div>
+                          
+                        </div>
+                          
+                      </div>
+                               
                     </div>
                  
                 </div>
@@ -162,8 +349,8 @@
         </div>   
         
         <div class="col-lg-4">
-            <div ng-include="'/admin/app/views/shared/proposals.html'" ng-show="!askAlternatives"></div>
-            <div ng-include="'/admin/app/views/shared/contacts.html'" ng-show="askAlternatives"></div>
+            <div ng-include="'/admin/app/views/shared/proposals.html'" ng-show="!askAlternatives && !askRequirements && !askRequirementsEval"></div>
+            <div ng-include="'/admin/app/views/shared/contacts.html'" ng-show="askAlternatives || askRequirements || askRequirementsEval"></div>
         </div>
     </div>
 </div>

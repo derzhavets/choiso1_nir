@@ -7,7 +7,8 @@
       <div class="row">
         <div class="col-md-12">
           <span class="provider" ng-repeat="provider in providers" ng-click="setProvider($index)"
-                ng-hide="provider.type === 'system' && user.testGroupId === 2">
+                ng-hide="provider.type === 'system' && user.testGroupId === 2"
+                ng-show="provider.show">
             <div class="icon" ng-style="{'background-image':'url({{provider.avatar}})'}"></div>
             <div>{{provider.name}}</div>
           </span>
@@ -17,10 +18,21 @@
       <div class="row">
         <div class="col-md-12">
           
-          <div ng-repeat="profession in activeProvider.professions" class="prof-drag-item" data-drag="!profession.added && activeDrag === 'proposal'" data-jqyoui-options="{revert: 'invalid'}" ng-model="profession" jqyoui-draggable="{index: {{$index}}, animate:true, onStart: 'traitDrop($index)', placeholder: 'keep'}">
-            {{profession.name}}
-            <span class="pull-right" ng-show="profession.added"><small>Added</small></span>
+          <div ng-repeat="option in activeProvider.professions" class="prof-drag-item" data-drag="!option.added" data-jqyoui-options="{revert: 'invalid'}" ng-model="option" jqyoui-draggable="{index: {{$index}}, animate:true, onStart: 'traitDrop($index)', placeholder: 'keep'}" ng-show="!alternative">
+            {{option.name}}
+            <span class="pull-right" ng-show="option.added"><small>Added</small></span>
           </div>
+        
+            
+            <div ng-repeat="profession in activeProvider.professions" 
+                 ng-show="profession.name === alternative.name && alternative">
+              
+              <div ng-repeat="requirement in profession.requirements" class="prof-drag-item" data-drag="!requirement.added" data-jqyoui-options="{revert: 'invalid'}" ng-model="requirement" jqyoui-draggable="{index: {{$index}}, animate:true, onStart: 'reqDrop($index, $parent.$index)', placeholder: 'keep'}" >
+                {{requirement.name}}
+                <span class="pull-right" ng-show="requirement.added"><small>Added</small></span>
+              </div>
+              
+            </div>
       
         </div>
       </div>

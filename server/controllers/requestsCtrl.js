@@ -59,15 +59,11 @@ exports.list = function(req,res){
   
     Request.find()
       .where('to').equals(req.user._id)
+      .where('answered').exists(false)
       .populate('from', 'displayName firstName avatar alternatives')
       .lean()
       .exec(function(err, data){
         if(err) return res.sendStatus(500);
-      
-        // remove alternatives if not set to 'show'
-        for(var i = 0 ; i < data.length ; i++){
-          if(!data[i].show) delete data[i].from.alternatives;
-        }       
       
         res.json(data);
       });
@@ -84,16 +80,62 @@ exports.update = function(req,res){
   Request.findById(req.params.section).exec(function(err, request){
     if(err || !request) return res.sendStatus(500);
     
-    request.alternatives = req.body.alternatives;
+    if(request.section === 'alternatives'){
+      request.alternatives = req.body.alternatives;
+    } else if(request.section === 'requirements'){
+      request.requirements = req.body.requirements;
+    } else if(request.section === 'requirements-eval'){
+      request.requirementsEval = req.body.requirementsEval;
+    }
+    
     request.answered = new Date().getTime();
     
     request.save(function(err){
       if(err) return res.sendStatus(500);
-      Email.sendRequest(request);
-      res.sendStatus(200);
+      
+      if(request.section === 'requirements-eval') {
+        saveToUser(request);
+      } else {
+        Email.sendRequest(request);
+        res.sendStatus(200);
+      }
     });
     
   });
+  
+  function saveToUser(request){
+    User.findById(request.from).exec(function(err, user){
+      if(err || !user) return res.sendStatus(500);
+      user.alternatives.forEach(function(alternative){
+        if(alternative.name === request.alternative){
+          alternative.requirements.forEach(function(requirement){
+            request.requirementsEval.forEach(function(evaluation){
+              if(evaluation.parent === requirement.name){
+                if(requirement.evals) {
+                  requirement.evals.push({
+                    user: evaluation.providerId,
+                    score: evaluation.score,
+                    timeStamp: new Date().getTime()
+                  });
+                } else {
+                  requirement.evals = [{
+                    user: evaluation.providerId,
+                    score: evaluation.score,
+                    timeStamp: new Date().getTime()
+                  }];
+                }
+              }
+            });
+          });
+        }
+      });
+      user.save(function(err){
+        if(err) return res.sendStatus(500);
+        Email.sendRequest(request);
+        res.sendStatus(200);
+      });
+    });
+  }
   
 };
 

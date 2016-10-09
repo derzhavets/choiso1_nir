@@ -13,12 +13,23 @@ var RequestSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'User'
   },
+  alternative: String, // alternative name
   section: String, // alternatives, mirror, requirements etc.
   type: String, // collect or evaluate
   show: Boolean, // "show what I have"
   alternatives: [{
     name: String,
     providerId: String
+  }],
+  requirements: [{
+    parent: String,
+    name: String,
+    providerId: String
+  }],
+  requirementsEval: [{
+    parent: String,
+    providerId: String,
+    score: String
   }],
   /*metadata: [{
     timeStamp: {

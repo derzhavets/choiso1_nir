@@ -4,7 +4,7 @@
   "authors": [
     "Nir Berenstein - nirber1@gmail.com"
   ],
-  "description": "Deal Value Admin",
+  "description": "Choiso",
   "main": "public/views/app/admin-index.html",
   "private": true,
   "ignore": [
@@ -31,7 +31,8 @@
     "ngSweetAlert": "angular-sweetalert#~1.1.1",
     "AngularJS-Toaster": "angularjs-toaster#~2.0.0",
     "angular-dragdrop": "~1.0.13",
-    "awesome-bootstrap-checkbox": "~0.3.7"
+    "awesome-bootstrap-checkbox": "~0.3.7",
+    "angular-chart.js": "~1.0.3"
   },
   "resolutions": {
     "jquery": "~2.1.4",

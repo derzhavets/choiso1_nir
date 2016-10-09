@@ -36,6 +36,26 @@ var UserSchema = new Schema({
         default: new Date().getTime()
       }
       
+    }],
+    requirements: [{
+      name: String,
+      score: Number,
+      evals: [{
+        user: {
+          type: Schema.ObjectId,
+          ref: 'User'
+        },
+        score: Number,
+        timeStamp: {
+          type: Number,
+          default: new Date().getTime()
+        }
+      }],
+      timeStamp: {
+        type: Number,
+        default: new Date().getTime()
+      }
+      
     }]
   }],
   recentContacts: [{
