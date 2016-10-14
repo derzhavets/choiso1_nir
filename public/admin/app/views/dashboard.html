@@ -1,14 +1,429 @@
 <div class="wrapper wrapper-content animated fadeInRight">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="text-center m-t-lg">
-                <h1>
-                    {{helloText}}
-                </h1>
-                <small>
-                    {{descriptionText}}
-                </small>
+  <h2>Communications</h2>
+  <div class="row">
+    <div class="col-lg-8">
+
+      <div class="ibox" ng-repeat="req in requests">
+
+        <!-- request for alternatives -->
+        <div ng-show="req.section === 'alternatives'">
+
+          <div class="ibox-title">
+              <h5>{{ req.from.displayName + ' Requests For Alternatives'}}</h5>
+              <span class="pull-right pointer" ng-click="submit($index)" ng-disable="submitting">
+                  {{ submitting ? 'Submitting...' : 'Submit'}}
+              </span>
+          </div>
+
+          <div class="ibox-content">
+
+            <div class="row m-b">
+              <div class="col-md-12" ng-show="req.show && req.from.alternatives">
+                <h2>{{ req.from.firstName + "'s Alternatives"}}</h2>
+                <span class="alt-tag" ng-repeat="alt in req.from.alternatives">{{alt.name}}</span>
+              </div>
             </div>
+
+            <h2 ng-show="req.from.alternatives">{{ 'Proposed Alternatives'}}</h2>
+
+            <div class="row">
+              <div class="col-lg-6">
+                <form ng-submit="addAlt($index, req.add)" class="form-inline">
+
+                  <div class="form-group">
+                    <input type="text" ng-model="req.add" class="form-control" id="add" 
+                           placeholder="Add Alternative" autocomplete="off"
+                           uib-typeahead="alt.name for alt in altList | filter:$viewValue | limitTo:8">
+                  </div>                             
+                  <button type="submit" class="btn btn-primary">Add</button>
+
+                </form>
+              </div>
+            </div>
+            <div class="row alternative-row" ng-repeat="r in req.alternatives">
+              <div class="col-lg-3">
+                <a href ng-click="removeReq($index, $parent.$index)">
+                  <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                </a>
+                <span>{{r.name}}</span>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- request for requirements -->
+        <div ng-show="req.section === 'requirements'">
+
+          <div class="ibox-title">
+              <h5>{{ req.from.displayName + ' Requests For Requirements'}}</h5>
+              <span class="pull-right pointer" ng-click="submit($index)" ng-disable="submitting">
+                  {{ submitting ? 'Submitting...' : 'Submit'}}
+              </span>
+          </div>
+
+          <div class="ibox-content">
+
+            <div class="row m-b">
+              <div class="col-md-12" ng-show="req.from.alternatives">
+                <h2>{{ req.from.firstName + "'s Requirements"}}</h2>
+                <span class="alt-tag" ng-repeat="alt in req.from.alternatives">{{alt.name}}</span>
+              </div>
+            </div>
+
+            <h2 ng-show="req.from.alternatives">{{ 'Proposed Requirements'}}</h2>
+
+            <div ng-repeat="alt in req.from.alternatives">
+
+              <div class="row">
+                <div class="col-lg-10">
+                  <form ng-submit="addReq($parent.$index ,$index, alt.add)" class="form-inline">
+
+                    <div class="form-group">
+                      <input type="text" ng-model="alt.add" class="form-control" id="add" 
+                             placeholder="Add Requirements for {{alt.name}}" autocomplete="off"
+                             uib-typeahead="r.name for r in reqList | filter:$viewValue | limitTo:8">
+                    </div>                             
+                    <button type="submit" class="btn btn-primary">Add</button>
+
+                  </form>
+                </div>
+              </div>
+
+              <div class="row alternative-row" ng-repeat="r in alt.reqs">
+                <div class="col-lg-3">
+                  <a href ng-click="removeReq($index, $parent.$index)">
+                    <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                  </a>
+                  <span>{{r.name}}</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+        
+        <!-- request for evaluate requirements -->
+        <div ng-show="req.section === 'requirements-eval'">
+
+          <div class="ibox-title">
+              <h5>{{ req.from.displayName + ' Requests For Requirement Evaluation'}}</h5>
+              <span class="pull-right pointer" ng-click="submit($index, req.alternative)" ng-disable="submitting">
+                  {{ submitting ? 'Submitting...' : 'Submit'}}
+              </span>
+          </div>
+
+          <div class="ibox-content">
+
+            <h2 ng-show="req.from.alternatives">{{ req.alternative}}</h2>
+
+            <div ng-repeat="alt in req.from.alternatives" ng-show="alt.name === req.alternative">
+
+              <div class="row">
+                
+                <div class="col-lg-4"><strong>Requirement</strong></div>
+                <div class="col-lg-4" ng-show="req.show"><strong>{{ req.from.firstName + "'s Evaluation"}}</strong></div>
+                <div class="col-lg-4"><strong>Your Evaluation</strong></div>
+              </div>
+              
+              <div class="row" ng-repeat="eval in alt.requirements">
+                
+                <div class="col-lg-4">
+                    {{eval.name}}
+                </div>
+                
+                <div class="col-lg-4" ng-show="req.show">
+                  <span class="m-r" ng-style="{color: eval.score === -2 ? 'red' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r" ng-style="{color: eval.score <= -1 ? 'red' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r" ng-style="{color: eval.score >= 1 ? 'green' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r" ng-style="{color: eval.score === 2 ? 'green' : 'grey'}">
+                      ===
+                  </span>
+                </div>
+                
+                <div class="col-lg-4 hover-black">
+                  <span class="m-r pointer" ng-click="addReqEval($parent.$parent.$index, $parent.$index, $index, -2)" 
+                        ng-style="{color: eval.eval.score === -2 ? 'red' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r pointer" ng-click="addReqEval($parent.$parent.$index, $parent.$index, $index, -1)" 
+                        ng-style="{color: eval.eval.score <= -1 ? 'red' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r pointer" ng-click="addReqEval($parent.$parent.$index, $parent.$index, $index, 1)" 
+                        ng-style="{color: eval.eval.score >= 1 ? 'green' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r pointer" ng-click="addReqEval($parent.$parent.$index, $parent.$index, $index, 2)" 
+                        ng-style="{color: eval.eval.score === 2 ? 'green' : 'grey'}">
+                      ===
+                  </span>
+                </div>
+                
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+        
+        <!-- request for lists -->
+        <div ng-show="req.section === 'lists'">
+
+          <div class="ibox-title">
+              <h5>{{ req.from.displayName + ' Requests For Traits'}}</h5>
+              <span class="pull-right pointer" ng-click="submit($index)" ng-disable="submitting">
+                  {{ submitting ? 'Submitting...' : 'Submit'}}
+              </span>
+          </div>
+
+          <div class="ibox-content">
+
+            <div class="row m-b" ng-show="req.show && req.from.traits">
+              <div class="col-md-12">
+                <h2>{{ req.from.firstName + "'s Traits"}}</h2>
+                <span class="alt-tag" ng-repeat="alt in req.from.traits">{{alt.name}}</span>
+              </div>
+            </div>
+
+            <h2 ng-show="req.from.traits">{{ 'Proposed Traits'}}</h2>
+
+            <div class="row">
+              <div class="col-lg-6">
+                <form ng-submit="addList($index, req.add)" class="form-inline">
+
+                  <div class="form-group">
+                    <input type="text" ng-model="req.add" class="form-control" id="add" 
+                           placeholder="Add List" autocomplete="off">
+                  </div>                             
+                  <button type="submit" class="btn btn-primary">Add</button>
+
+                </form>
+              </div>
+            </div>
+            <div class="row alternative-row" ng-repeat="r in req.lists">
+              <div class="col-lg-3">
+                <a href ng-click="removeList($index, $parent.$index)">
+                  <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                </a>
+                <span>{{r.name}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <!-- request for attributes -->
+        <div ng-show="req.section === 'attributes'">
+
+          <div class="ibox-title">
+              <h5>{{ req.from.displayName + ' Requests Attributes For ' + req.alternative}}</h5>
+              <span class="pull-right pointer" ng-click="submit($index)" ng-disable="submitting">
+                  {{ submitting ? 'Submitting...' : 'Submit'}}
+              </span>
+          </div>
+
+          <div class="ibox-content">
+
+            <h2 ng-show="req.from.alternatives">{{ req.alternative}}</h2>
+
+            
+              
+            <div class="row m-b">
+              <div class="col-md-12" ng-show="req.from.traits">
+                <h2>{{ req.from.firstName + "'s Attributes"}}</h2>
+                <div ng-repeat="alt in req.from.traits" ng-show="alt.name === req.alternative">
+                  <span class="alt-tag" ng-repeat="trait in alt.attributes">{{trait.name}}</span>
+              </div>
+            </div>
+
+            <h2 ng-show="req.from.traits">{{ 'Proposed Requirements'}}</h2>
+
+
+            <div class="row">
+              <div class="col-lg-10">
+                <form ng-submit="addAttribute($index, req.add)" class="form-inline">
+
+                  <div class="form-group">
+                    <input type="text" ng-model="req.add" class="form-control" id="add" 
+                           placeholder="Add Attributes for {{req.alternative}}" autocomplete="off">
+                  </div>                             
+                  <button type="submit" class="btn btn-primary">Add</button>
+
+                </form>
+              </div>
+            </div>
+
+            <div class="row alternative-row" ng-repeat="r in req.traits">
+              <div class="col-lg-3">
+                <a href ng-click="removeAttribute($index, $parent.$index)">
+                  <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                </a>
+                <span>{{r.name}}</span>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+      </div>
+        
+        
+      <!-- request for evaluate attributes -->
+        <div ng-show="req.section === 'attributes-eval'">
+
+          <div class="ibox-title">
+              <h5>{{ req.from.displayName + ' Requests For Attributes Evaluation'}}</h5>
+              <span class="pull-right pointer" ng-click="submit($index, req.alternative)" ng-disable="submitting">
+                  {{ submitting ? 'Submitting...' : 'Submit'}}
+              </span>
+          </div>
+
+          <div class="ibox-content">
+
+            <h2 ng-show="req.from.alternatives">{{ req.alternative }}</h2>
+
+            <div ng-repeat="list in req.from.traits" ng-show="list.name === req.alternative">
+
+              <div class="row">
+                
+                <div class="col-lg-4"><strong>Attribute</strong></div>
+                <div class="col-lg-4" ng-show="req.show"><strong>{{ req.from.firstName + "'s Evaluation"}}</strong></div>
+                <div class="col-lg-4"><strong>Your Evaluation</strong></div>
+              </div>
+              
+              <div class="row" ng-repeat="eval in list.attributes" ng-show="req.attrEvalList.indexOf(eval.name) > -1">
+                
+                <div class="col-lg-4">
+                    {{eval.name}}
+                </div>
+                
+                
+                
+                
+                <!-- show ========================== -->
+                
+                
+                <div class="col-lg-4" ng-show="req.show && (list.name === 'values' || list.name === 'preferences')">
+                  <span class="m-r" ng-style="{color: eval.score === -2 ? 'red' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r" ng-style="{color: eval.score <= -1 ? 'red' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r" ng-style="{color: eval.score >= 1 ? 'green' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r" ng-style="{color: eval.score === 2 ? 'green' : 'grey'}">
+                      ===
+                  </span>
+                </div>
+                <div class="col-lg-4" ng-show="req.show && (list.name === 'strengths' || list.name === 'concerns')">
+                  <span class="m-r" ng-style="{color: eval.score >= 1 ? 'green' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r" ng-style="{color: eval.score >= 2 ? 'green' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r" ng-style="{color: eval.score == 3 ? 'green' : 'grey'}">
+                      ===
+                  </span>
+                 
+                </div> 
+                <div class="col-lg-4" ng-show="req.show && list.name === 'weaknesses'">
+                  <span class="m-r" ng-style="{color: eval.score <= -1 ? 'red' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r" ng-style="{color: eval.score <= -2 ? 'red' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r" ng-style="{color: eval.score <= -3 ? 'red' : 'grey'}">
+                      ===
+                  </span>
+                 
+                </div>
+                
+                
+                
+                <!-- eval ========================== -->
+                
+  
+                
+                <div class="col-lg-4 hover-black" ng-show="list.name === 'values' || list.name === 'preferences'">
+                  <span class="m-r pointer" ng-click="addAttrEval($parent.$parent.$index, $parent.$index, $index, -2)" 
+                        ng-style="{color: eval.eval.score === -2 ? 'red' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r pointer" ng-click="addAttrEval($parent.$parent.$index, $parent.$index, $index, -1)" 
+                        ng-style="{color: eval.eval.score <= -1 ? 'red' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r pointer" ng-click="addAttrEval($parent.$parent.$index, $parent.$index, $index, 1)" 
+                        ng-style="{color: eval.eval.score >= 1 ? 'green' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r pointer" ng-click="addAttrEval($parent.$parent.$index, $parent.$index, $index, 2)" 
+                        ng-style="{color: eval.eval.score === 2 ? 'green' : 'grey'}">
+                      ===
+                  </span>
+                </div>
+                <div class="col-lg-4 hover-black"  ng-show="list.name === 'strengths' || list.name === 'concerns'">
+                  <span class="m-r pointer" ng-click="addAttrEval($parent.$parent.$index, $parent.$index, $index, 1)" 
+                        ng-style="{color: eval.eval.score >= 1 ? 'green' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r pointer" ng-click="addAttrEval($parent.$parent.$index, $parent.$index, $index, 2)" 
+                        ng-style="{color: eval.eval.score >= 2 ? 'green' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r pointer" ng-click="addAttrEval($parent.$parent.$index, $parent.$index, $index, 3)" 
+                        ng-style="{color: eval.eval.score == 3 ? 'green' : 'grey'}">
+                      ===
+                  </span>
+                
+                </div>
+                <div class="col-lg-4 hover-black"  ng-show="list.name === 'weaknesses'">
+                  <span class="m-r pointer" ng-click="addAttrEval($parent.$parent.$index, $parent.$index, $index, -1)" 
+                        ng-style="{color: eval.eval.score <= -1 ? 'red' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r pointer" ng-click="addAttrEval($parent.$parent.$index, $parent.$index, $index, -2)" 
+                        ng-style="{color: eval.eval.score <= -2 ? 'red' : 'grey'}">
+                      ===
+                  </span>
+                  <span class="m-r pointer" ng-click="addAttrEval($parent.$parent.$index, $parent.$index, $index, -3)" 
+                        ng-style="{color: eval.eval.score <= -3 ? 'red' : 'grey'}">
+                      ===
+                  </span>
+                
+                </div>
+                 <!-- end -->
+                
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+        
+        
+        
+
+      </div>
+
+    </div>   
+
+    <div class="col-lg-4" ng-show="false">
+        <div ng-include="'/admin/app/views/shared/proposals.html'" ng-show="!askAlternatives"></div>
+        <div ng-include="'/admin/app/views/shared/contacts.html'" ng-show="askAlternatives"></div>
     </div>
+
+  </div>
 </div>

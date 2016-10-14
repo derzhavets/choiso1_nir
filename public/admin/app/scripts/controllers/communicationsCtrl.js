@@ -28,6 +28,16 @@ angular.module('choiso').controller('communicationsCtrl', function ($scope, $htt
       $scope.requests[parent].alternatives.push({name: name, proviedrId: $scope.user._id});
   };
   
+  $scope.addList = function(parent, name){
+      var flag = false;
+      $scope.requests[parent].add = '';
+      $scope.requests[parent].lists.forEach(function(alt){
+        if(alt.name === name) flag = true;
+      });
+      if(flag) return;
+      $scope.requests[parent].lists.push({name: name, proviedrId: $scope.user._id});
+  };
+  
   $scope.addReq = function(parent, i, name){
       
       if(!$scope.requests[parent].from.alternatives[i].reqs) $scope.requests[parent].from.alternatives[i].reqs = [];
@@ -57,6 +67,9 @@ angular.module('choiso').controller('communicationsCtrl', function ($scope, $htt
   $scope.removeAlt = function(i, parent){
       $scope.requests[parent].alternatives.splice(i, 1);
   };
+  $scope.removeList = function(i, parent){
+      $scope.requests[parent].lists.splice(i, 1);
+  };
   
   $scope.submit = function(alternative,i){
     $scope.requests[i].submitting = true;
@@ -72,7 +85,7 @@ angular.module('choiso').controller('communicationsCtrl', function ($scope, $htt
       });
     }
         
-    if($scope.requests[i].section === 'requirements-eval'){
+    else if($scope.requests[i].section === 'requirements-eval'){
       $scope.requests[i].requirementsEval = [];
       
       var index;
@@ -85,7 +98,7 @@ angular.module('choiso').controller('communicationsCtrl', function ($scope, $htt
       });
       console.log($scope.requests[i].requirementsEval);
     }
-        
+            
     
     console.log($scope.requests[i])
     $http.put('/api/requests/' + $scope.requests[i]._id, $scope.requests[i]).then(function (response) {

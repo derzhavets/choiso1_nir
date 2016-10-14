@@ -1,0 +1,43 @@
+<div class="ibox">
+    <div class="ibox-title">
+        <h5>Proposals</h5>
+    </div>
+    <div class="ibox-content">
+      
+      <div class="row">
+        <div class="col-md-12">
+          <span class="provider" ng-repeat="provider in providers" ng-click="setProvider($index)"
+                ng-hide="(provider.type === 'system' && user.testGroupId === 2)"
+                ng-show="(alternative && provider.professions) || !alternative">
+            <div class="icon" ng-style="{'background-image':'url({{provider.avatar}})'}"></div>
+            <div>{{provider.name}}</div>
+          </span>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-md-12">
+          
+          <div ng-repeat="profession in activeProvider.professions" class="prof-drag-item" data-drag="!profession.added && activeDrag === 'proposal'" data-jqyoui-options="{revert: 'invalid'}" ng-model="profession" jqyoui-draggable="{index: {{$index}}, animate:true, onStart: 'traitDrop($index)', placeholder: 'keep'}" ng-show="!alternative">
+            {{profession.name}}
+            <span class="pull-right" ng-show="profession.added"><small>Added</small></span>
+          </div>
+            
+          <uib-accordion close-others="true" ng-show="alternative">
+            <div uib-accordion-group class="panel-default" heading="{{profession.name}}"  
+                 ng-repeat="profession in activeProvider.professions" 
+                 ng-show="profession.requirements && profession.requirements.length > 0">
+              
+              <div ng-repeat="requirement in profession.requirements" class="prof-drag-item" data-drag="!requirement.added" data-jqyoui-options="{revert: 'invalid'}" ng-model="requirement" jqyoui-draggable="{index: {{$index}}, animate:true, onStart: 'reqDrop($index, $parent.$index)', placeholder: 'keep'}" >
+                {{requirement.name}}
+                <span class="pull-right" ng-show="requirement.added"><small>Added</small></span>
+              </div>
+              
+            </div>
+          </uib-accordion>
+      
+        </div>
+      </div>
+      
+    </div>
+</div>

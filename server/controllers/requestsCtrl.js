@@ -60,7 +60,7 @@ exports.list = function(req,res){
     Request.find()
       .where('to').equals(req.user._id)
       .where('answered').exists(false)
-      .populate('from', 'displayName firstName avatar alternatives')
+      .populate('from', 'displayName firstName avatar alternatives traits')
       .lean()
       .exec(function(err, data){
         if(err) return res.sendStatus(500);
@@ -86,6 +86,13 @@ exports.update = function(req,res){
       request.requirements = req.body.requirements;
     } else if(request.section === 'requirements-eval'){
       request.requirementsEval = req.body.requirementsEval;
+    } else if(request.section === 'lists'){
+      request.lists = req.body.lists;
+    } else if(request.section === 'attributes'){
+      request.traits = req.body.traits;
+    } else if(request.section === 'attributes-eval'){
+      request.traitsEval = req.body.traitsEval;
+      //request.attrEvalList = req.body.attrEvalList;
     }
     
     request.answered = new Date().getTime();
@@ -94,7 +101,9 @@ exports.update = function(req,res){
       if(err) return res.sendStatus(500);
       
       if(request.section === 'requirements-eval') {
-        saveToUser(request);
+        saveReqToUser(request);
+      } else if(request.section === 'attributes-eval') {
+        saveAttrToUser(request);
       } else {
         Email.sendRequest(request);
         res.sendStatus(200);
@@ -103,7 +112,7 @@ exports.update = function(req,res){
     
   });
   
-  function saveToUser(request){
+  function saveReqToUser(request){
     User.findById(request.from).exec(function(err, user){
       if(err || !user) return res.sendStatus(500);
       user.alternatives.forEach(function(alternative){
@@ -129,6 +138,41 @@ exports.update = function(req,res){
           });
         }
       });
+      user.save(function(err){
+        if(err) return res.sendStatus(500);
+        Email.sendRequest(request);
+        res.sendStatus(200);
+      });
+    });
+  }
+  
+  function saveAttrToUser(request){
+    User.findById(request.from).exec(function(err, user){
+      if(err || !user) return res.sendStatus(500);
+      user.traits.forEach(function(trait){
+        if(trait.name === request.alternative){
+          trait.attributes.forEach(function(attribute){
+            request.traitsEval.forEach(function(evaluation){
+              if(evaluation.parent === attribute.name){
+                if(attribute.evals) {
+                  attribute.evals.push({
+                    user: evaluation.providerId,
+                    score: evaluation.score,
+                    timeStamp: new Date().getTime()
+                  });
+                } else {
+                  attribute.evals = [{
+                    user: evaluation.providerId,
+                    score: evaluation.score,
+                    timeStamp: new Date().getTime()
+                  }];
+                }
+              }
+            });
+          });
+        }
+      });
+      console.log(user.traits);
       user.save(function(err){
         if(err) return res.sendStatus(500);
         Email.sendRequest(request);

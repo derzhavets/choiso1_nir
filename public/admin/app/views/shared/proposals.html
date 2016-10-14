@@ -18,21 +18,51 @@
       <div class="row">
         <div class="col-md-12">
           
-          <div ng-repeat="option in activeProvider.professions" class="prof-drag-item" data-drag="!option.added" data-jqyoui-options="{revert: 'invalid'}" ng-model="option" jqyoui-draggable="{index: {{$index}}, animate:true, onStart: 'traitDrop($index)', placeholder: 'keep'}" ng-show="!alternative">
-            {{option.name}}
-            <span class="pull-right" ng-show="option.added"><small>Added</small></span>
-          </div>
-        
-            
+          <div ng-if="!mirror">
+            <div ng-repeat="option in activeProvider.professions" class="prof-drag-item" data-drag="!option.added" data-jqyoui-options="{revert: 'invalid'}" ng-model="option" jqyoui-draggable="{index: {{$index}}, animate:true, onStart: 'traitDrop($index)', placeholder: 'keep'}" ng-show="!alternative">
+              {{option.name}}
+              <span class="pull-right" ng-show="option.added"><small>Added</small></span>
+            </div>
+
+
             <div ng-repeat="profession in activeProvider.professions" 
                  ng-show="profession.name === alternative.name && alternative">
-              
+
               <div ng-repeat="requirement in profession.requirements" class="prof-drag-item" data-drag="!requirement.added" data-jqyoui-options="{revert: 'invalid'}" ng-model="requirement" jqyoui-draggable="{index: {{$index}}, animate:true, onStart: 'reqDrop($index, $parent.$index)', placeholder: 'keep'}" >
                 {{requirement.name}}
                 <span class="pull-right" ng-show="requirement.added"><small>Added</small></span>
               </div>
-              
+
             </div>
+          </div>
+          
+          <div ng-if="mirror">
+            <div ng-repeat="option in activeProvider.traits" class="prof-drag-item" data-drag="!option.added" data-jqyoui-options="{revert: 'invalid'}" ng-model="option" jqyoui-draggable="{index: {{$index}}, animate:true, onStart: 'listDrop($index)', placeholder: 'keep'}" ng-show="!alternative">
+              {{option.listName}}
+              <span class="pull-right" ng-show="option.added"><small>Added</small></span>
+            </div>
+
+<!--
+            <div ng-repeat="list in activeProvider.traits" 
+                 ng-show="list.listName === alternative.name && alternative">
+
+              <div ng-repeat="attribute in list.attributes" class="prof-drag-item" data-drag="!attribute.added" data-jqyoui-options="{revert: 'invalid'}" ng-model="attribute" jqyoui-draggable="{index: {{$index}}, animate:true, onStart: 'attributeDrop($index, $parent.$index)', placeholder: 'keep'}" >
+                {{attribute.name}}
+                <span class="pull-right" ng-show="attribute.added"><small>Added</small></span>
+              </div>
+
+            </div>
+            -->
+            
+              <div ng-repeat="attribute in activeProvider.attributes" class="prof-drag-item" data-drag="!attribute.added" data-jqyoui-options="{revert: 'invalid'}" ng-model="attribute" jqyoui-draggable="{index: {{$index}}, animate:true, onStart: 'attributeDrop($index)', placeholder: 'keep'}" >
+                {{attribute.name}}
+                <span class="pull-right" ng-show="attribute.added"><small>Added</small></span>
+              </div>
+
+            
+            
+            
+          </div>
       
         </div>
       </div>

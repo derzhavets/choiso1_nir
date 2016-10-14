@@ -172,6 +172,111 @@
 
           </div>
         </div>
+        
+        <!-- request for lists -->
+        <div ng-show="req.section === 'lists'">
+
+          <div class="ibox-title">
+              <h5>{{ req.from.displayName + ' Requests For Traits'}}</h5>
+              <span class="pull-right pointer" ng-click="submit($index)" ng-disable="submitting">
+                  {{ submitting ? 'Submitting...' : 'Submit'}}
+              </span>
+          </div>
+
+          <div class="ibox-content">
+
+            <div class="row m-b" ng-show="req.show && req.from.traits">
+              <div class="col-md-12">
+                <h2>{{ req.from.firstName + "'s Traits"}}</h2>
+                <span class="alt-tag" ng-repeat="alt in req.from.traits">{{alt.name}}</span>
+              </div>
+            </div>
+
+            <h2 ng-show="req.from.traits">{{ 'Proposed Traits'}}</h2>
+
+            <div class="row">
+              <div class="col-lg-6">
+                <form ng-submit="addList($index, req.add)" class="form-inline">
+
+                  <div class="form-group">
+                    <input type="text" ng-model="req.add" class="form-control" id="add" 
+                           placeholder="Add List" autocomplete="off">
+                  </div>                             
+                  <button type="submit" class="btn btn-primary">Add</button>
+
+                </form>
+              </div>
+            </div>
+            <div class="row alternative-row" ng-repeat="r in req.lists">
+              <div class="col-lg-3">
+                <a href ng-click="removeList($index, $parent.$index)">
+                  <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                </a>
+                <span>{{r.name}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <!-- request for attributes -->
+        <div ng-show="req.section === 'attributes'">
+
+          <div class="ibox-title">
+              <h5>{{ req.from.displayName + ' Requests Attributes For ' + req.alternative}}</h5>
+              <span class="pull-right pointer" ng-click="submit($index)" ng-disable="submitting">
+                  {{ submitting ? 'Submitting...' : 'Submit'}}
+              </span>
+          </div>
+
+          <div class="ibox-content">
+
+            <h2 ng-show="req.from.alternatives">{{ req.alternative}}</h2>
+
+            
+              
+            <div class="row m-b">
+              <div class="col-md-12" ng-show="req.from.traits">
+                <h2>{{ req.from.firstName + "'s Attributes"}}</h2>
+                <div ng-repeat="alt in req.from.traits" ng-show="alt.name === req.alternative">
+                  <span class="alt-tag" ng-repeat="trait in alt.attributes">{{trait.name}}</span>
+              </div>
+            </div>
+
+            <h2 ng-show="req.from.traits">{{ 'Proposed Requirements'}}</h2>
+
+            <div ng-repeat="alt in req.from.traits">
+
+              <div class="row">
+                <div class="col-lg-10">
+                  <form ng-submit="addReq($parent.$index ,$index, alt.add)" class="form-inline">
+
+                    <div class="form-group">
+                      <input type="text" ng-model="alt.add" class="form-control" id="add" 
+                             placeholder="Add Requirements for {{alt.name}}" autocomplete="off"
+                             uib-typeahead="r.name for r in reqList | filter:$viewValue | limitTo:8">
+                    </div>                             
+                    <button type="submit" class="btn btn-primary">Add</button>
+
+                  </form>
+                </div>
+              </div>
+
+              <div class="row alternative-row" ng-repeat="r in alt.reqs">
+                <div class="col-lg-3">
+                  <a href ng-click="removeReq($index, $parent.$index)">
+                    <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                  </a>
+                  <span>{{r.name}}</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+        
+        
 
       </div>
 

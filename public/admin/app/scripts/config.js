@@ -38,6 +38,15 @@ angular.module('choiso').config(function ($stateProvider, $urlRouterProvider, $l
             data: { pageTitle: 'Alternatives ' }
         })
     
+        // Mirror 
+        .state('app.mirror', {
+            url: "/mirror",
+            templateUrl: "admin/app/views/mirror.html",
+            controller: 'mirrorCtrl',
+            data: { pageTitle: 'Mirror ' }
+        })
+    
+    /*
         // communications 
         .state('app.communications', {
             url: "/communications",
@@ -45,7 +54,7 @@ angular.module('choiso').config(function ($stateProvider, $urlRouterProvider, $l
             controller: 'communicationsCtrl',
             data: { pageTitle: 'Communications ' }
         })
-    
+    */
     
         // Users
         .state('app.profile', {

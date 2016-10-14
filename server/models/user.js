@@ -17,6 +17,32 @@ var UserSchema = new Schema({
     ref: 'User'
   },
   avatar: String,
+  traits: [{
+    name: String,
+    attributes: [{
+      name: String,
+      score: Number,
+      timeStamp: {
+        type: Number,
+        default: new Date().getTime()
+      },
+      evals: [{
+        user: {
+          type: Schema.ObjectId,
+          ref: 'User'
+        },
+        score: Number,
+        timeStamp: {
+          type: Number,
+          default: new Date().getTime()
+        }
+      }],
+      timeStamp: {
+        type: Number,
+        default: new Date().getTime()
+      }
+    }]
+  }],
   alternatives: [{
     timeStamp: {
         type: Number,

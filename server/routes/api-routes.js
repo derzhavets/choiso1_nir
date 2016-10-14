@@ -2,6 +2,8 @@
 
 var users = require('../controllers/userCtrl'),
     alternatives = require('../controllers/alternativeCtrl'),
+    mirror = require('../controllers/mirror'),
+    traits = require('../controllers/traitsCtrl'),
     recents = require('../controllers/recentsCtrl'),
     general = require('../controllers/generalCtrl'),
     requests = require('../controllers/requestsCtrl'),
@@ -49,7 +51,23 @@ module.exports = function(passport) {
     router.route('/alternatives/:id/requirements/:reqId/scores/:score')
         .put(isLoggedIn, requirements.setScore)
     
-    
+    // mirror lists 
+    router.route('/mirror')
+        .post(isLoggedIn, mirror.create);
+
+    router.route('/mirror/:id')
+        .put(isLoggedIn, mirror.update)
+        .delete(isLoggedIn, mirror.delete);
+    // attributes 
+    router.route('/traits/:id/attributes')
+        .post(isLoggedIn, traits.create);
+  
+     router.route('/traits/:id/attributes/:reqId')
+        .delete(isLoggedIn, traits.delete);
+
+    router.route('/traits/:id/attributes/:reqId/scores/:score')
+        .put(isLoggedIn, traits.setScore)
+  
     
     // recents 
     router.route('/contacts/add-recent/:id')

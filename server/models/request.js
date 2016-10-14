@@ -31,6 +31,21 @@ var RequestSchema = new Schema({
     providerId: String,
     score: String
   }],
+  lists: [{
+    listName: String,
+    providerId: String
+  }],
+  traits: [{
+    parent: String,
+    name: String,
+    providerId: String
+  }],
+  traitsEval: [{
+    parent: String,
+    providerId: String,
+    score: String
+  }],
+  attrEvalList: [String],
   /*metadata: [{
     timeStamp: {
         type: Number,

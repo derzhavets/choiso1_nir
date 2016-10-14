@@ -103,6 +103,8 @@ exports.start = function(req,res){
       request.name = request.to.displayName;
       request.avatar = request.to.avatar;
       request.professions = [];
+      request.attributes = request.traits || [];
+      request.traits = request.lists || [];
       
       request.alternatives.forEach(function(alt){
         
@@ -117,17 +119,37 @@ exports.start = function(req,res){
         
       });
       
+      request.traits.forEach(function(list){
+        list.attributes = getAttributes(list.listName, request.to._id)
+      });
+      
       data.providers.push(request);
       
     });
     
+    
+    function getAttributes(name, id){
+      var arr = [];
+      data.requests.forEach(function(request, i){
+        console.log(name, id);
+          if(request.section === 'attributes' && request.alternative === name && id === request.to._id){
+            /*request.attributes.forEach(function(attr){
+              trait.attributes.push(attr.name)
+            });*/
+            console.log('============');
+            console.log(request);
+          }
+        });
+      return arr;
+        
+    }
     function getReqs(name, id){
         var arr = [];
         data.requests.forEach(function(request, i){
           if(request.section === 'requirements'){
             request.requirements.forEach(function(r){
-                  console.log(name, id);
-                  console.log(r.parent, r.providerId);
+                  //console.log(name, id);
+                  //console.log(r.parent, r.providerId);
                 if(r.parent == name && r.providerId == id) {
                   console.log('match');
                   arr.push({

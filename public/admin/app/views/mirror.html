@@ -1,0 +1,368 @@
+<div class="wrapper wrapper-content animated fadeInRight">
+    <h2>Alternatives</h2>
+    <div class="row">
+        <div class="col-lg-8">
+            
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>{{ alternative.name || title}}</h5>
+                    <span ng-show="alternative || askLists" class="pull-right pointer" ng-click="back()">
+                        <i class="fa fa-caret-left" aria-hidden="true"></i>
+                        Back
+                    </span>
+                    
+                </div>
+                <div class="ibox-content" ng-show="!alternative">
+                    
+                  <div ng-show="!askLists">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <form ng-submit="addList()" class="form-inline">
+
+                                <div class="form-group">
+                                    <input type="text" ng-model="selectedList" class="form-control" id="add" 
+                                           placeholder="Add List" autocomplete="off">
+                                </div>                             
+                                <button type="submit" class="btn btn-primary">Add</button>
+
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="row alternative-row" ng-repeat="list in lists">
+                        <div class="col-lg-3">
+                            <a href ng-click="removeList($index, list._id)"><i class="fa fa-times-circle-o" aria-hidden="true"></i></a>
+                            <span class="pointer" ng-click="listView(list)">{{list.name}}</span>
+                        </div>
+                    </div>
+
+                    <div class="row m-b">
+                      <div class="col-lg-12" ng-show="!askLists">
+                          <div class="drop-zone" data-drop="true" ng-model="listZone"
+                               jqyoui-droppable="{animate: true, onDrop: 'listDrop($index)'}">
+                              Drop List Here
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="row m-b">
+                      <div class="col-lg-12 text-center">
+                        <button ng-click="requestListsView()" class="btn btn-primary">Ask Friends For Lists</button>
+                      </div>
+                    </div>
+                      
+                  </div>
+                  
+                  <div ng-show="askLists">
+               
+                    <div class="row m-b" ng-show="requestedListsArr.length > 0">
+                      <div class="col-lg-12">
+                        <h2>Requests Sent To:</h2>
+                        <span class="provider" ng-repeat="contact in requestedListsArr">
+                          <div class="icon" ng-style="{'background-image':'url({{contact.avatar}})'}"></div>
+                          <div>{{contact.displayName}}</div>
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div class="row m-b">
+                      <div class="col-lg-12">
+                        <div class="drop-zone m-b" data-drop="true" ng-model="contactsZone"
+                             jqyoui-droppable="{animate: true, onDrop: 'contactDrop($index, list.index)'}">
+                            Drop Contacts Here
+                        </div>
+                      </div>
+                      
+                      <div class="col-lg-12" ng-show="listRequestArr.length > 0">
+                        <h2>Send Request To:</h2>
+                        <span class="provider" ng-repeat="contact in listRequestArr" ng-click="setProvider($index)">
+                          <div class="icon" ng-style="{'background-image':'url({{contact.avatar}})'}"></div>
+                          <div>{{contact.displayName}}</div>
+                        </span>
+                      </div>
+                        
+                      
+                      <div class="col-lg-12">
+                        <form ng-submit="sendListsRequest(showMyLists)">
+                          <div class="checkbox checkbox-inline">
+                            <input type="checkbox" id="showAsk" ng-model="showMyLists">
+                            <label for="showAsk">
+                                Show My Current Lists
+                            </label>
+                          </div>
+                          <button type="submit" class="btn btn-primary">
+                            Send Requests
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                 
+                </div>
+              
+              
+                
+                <div class="ibox-content" ng-show="alternative">
+                    
+                    <div class="row">
+                      
+                      <div ><!--ng-show=""!askAttributes && !askAttributesEval-->
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <form ng-submit="addAttribute(selectedAttr)" class="form-inline">
+
+                                    <div class="form-group">
+                                        <input type="text" ng-model="selectedAttr" class="form-control" id="add" 
+                                               placeholder="Add Attributes" autocomplete="off">
+                                           
+                                    </div>                             
+                                    <button type="submit" class="btn btn-primary">Add</button>
+
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="row alternative-row" ng-repeat="req in alternative.attributes">
+                          <div class="col-lg-3">
+                            <a href ng-click="removeattr($index, req._id)"><i class="fa fa-times-circle-o" aria-hidden="true"></i></a>
+                            <span ng-show="askAttributesEval" class="m-r">
+                              <input type="checkbox" ng-model="req.request" ng-change="checkAttribue(req.name)"> Evalute this Attribute?
+                            </span>
+                            <span>{{req.name}}</span>
+                          </div>
+                          <div class="col-lg-8" ng-show="alternative.name === 'values' || alternative.name === 'preferences'">
+                              <span class="m-r pointer" ng-click="setReqScore($parent.$index, $index, req, -2)" 
+                                    ng-style="{color: req.score === -2 ? 'red' : 'grey'}">
+                                  ===
+                              </span>
+                              <span class="m-r pointer" ng-click="setReqScore($parent.$index, $index, req, -1)" 
+                                    ng-style="{color: req.score <= -1 ? 'red' : 'grey'}">
+                                  ===
+                              </span>
+                              <span class="m-r pointer" ng-click="setReqScore($parent.$index, $index, req, 1)" 
+                                    ng-style="{color: req.score >= 1 ? 'green' : 'grey'}">
+                                  ===
+                              </span>
+                              <span class="m-r pointer" ng-click="setReqScore($parent.$index, $index, req, 2)" 
+                                    ng-style="{color: req.score === 2 ? 'green' : 'grey'}">
+                                  ===
+                              </span>
+                          </div>
+                          <div class="col-lg-8" ng-show="alternative.name === 'strengths' || alternative.name === 'concerns'">
+                              <span class="m-r pointer" ng-click="setReqScore($parent.$index, $index, req, 1)" 
+                                    ng-style="{color: req.score >= 1 ? 'green' : 'grey'}">
+                                  ===
+                              </span>
+                              <span class="m-r pointer" ng-click="setReqScore($parent.$index, $index, req, 2)" 
+                                    ng-style="{color: req.score >= 2 ? 'green' : 'grey'}">
+                                  ===
+                              </span>
+                              <span class="m-r pointer" ng-click="setReqScore($parent.$index, $index, req, 3)" 
+                                    ng-style="{color: req.score == 3 ? 'green' : 'grey'}">
+                                  ===
+                              </span>
+                          </div>
+                          <div class="col-lg-8" ng-show="alternative.name === 'weaknesses'">
+                              <span class="m-r pointer" ng-click="setReqScore($parent.$index, $index, req, -1)" 
+                                    ng-style="{color: req.score <= -1 ? 'red' : 'grey'}">
+                                  ===
+                              </span>
+                              <span class="m-r pointer" ng-click="setReqScore($parent.$index, $index, req, -2)" 
+                                    ng-style="{color: req.score <= -2 ? 'red' : 'grey'}">
+                                  ===
+                              </span>
+                              <span class="m-r pointer" ng-click="setReqScore($parent.$index, $index, req, -3)" 
+                                    ng-style="{color: req.score <= -3 ? 'red' : 'grey'}">
+                                  ===
+                              </span>
+                          </div>
+                          <div class="col-lg-1" ng-show="alternative.name === 'values' || alternative.name === 'preferences' || alternative.name === 'strengths' || alternative.name === 'concerns' || alternative.name === 'weaknesses'">
+                            <i class="fa fa-caret-down fa-2x" ng-click="req.open = true; setEvalData($index, req.evals)" ng-show="!req.open"></i>
+                            <i class="fa fa-caret-up fa-2x" ng-click="req.open = false" ng-show="req.open"></i>
+                          </div>
+                          <div class="col-lg-12" ng-show="req.open">
+                            <div class="col-lg-3">
+                              <!--<div ac-chart="'pie'" ac-data="chartData" ac-config="config" id="chart" class="chart"></div>-->
+                              <canvas id="{{'chart' + $index}}" class="chart chart-pie"
+                                chart-data="req.evalScores" chart-labels="chart.labels" chart-click="chart.click" chart-options="chart.options" chart-colors="chart.colors"
+                                      ng-show="alternative.name === 'values' || alternative.name === 'preferences' || alternative.name === 'strengths' || alternative.name === 'concerns' || alternative.name === 'weaknesses'">
+                              </canvas> 
+                            </div>
+                            <div class="col-lg-9" ng-show="alternative.name === 'values' || alternative.name === 'preferences' || alternative.name === 'strengths' || alternative.name === 'concerns' || alternative.name === 'weaknesses'">
+                              <div class="row" ng-repeat="eval in req.evals" 
+                                   ng-show="req.showScore === eval.score || !req.showScoreFilter">
+                                <div class="col-lg-1"> 
+                                  <div class="contact-icon" ng-style="{'background-image':'url({{getEvalFace(eval.user)}})'}"></div>
+                                </div>
+                                <div class="col-lg-3"> {{getEvalName(eval.user)}} </div>
+                                
+                                <div class="col-lg-8" ng-show="alternative.name === 'values' || alternative.name === 'preferences'">
+                                <span class="m-r" ng-style="{color: eval.score === -2 ? 'red' : 'grey'}">
+                                    ===
+                                </span>
+                                <span class="m-r" ng-style="{color: eval.score <= -1 ? 'red' : 'grey'}">
+                                    ===
+                                </span>
+                                <span class="m-r" ng-style="{color: eval.score >= 1 ? 'green' : 'grey'}">
+                                    ===
+                                </span>
+                                <span class="m-r" ng-style="{color: eval.score === 2 ? 'green' : 'grey'}">
+                                    ===
+                                </span>
+                              </div>
+                              <div class="col-lg-8" ng-show="alternative.name === 'strengths' || alternative.name === 'concerns'">
+                                <span class="m-r" ng-style="{color: eval.score >= 1 ? 'green' : 'grey'}">
+                                    ===
+                                </span>
+                                <span class="m-r" ng-style="{color: eval.score >= 2 ? 'green' : 'grey'}">
+                                    ===
+                                </span>
+                                <span class="m-r" ng-style="{color: eval.score == 3 ? 'green' : 'grey'}">
+                                    ===
+                                </span>
+
+                              </div> 
+                              <div class="col-lg-8" ng-show="alternative.name === 'weaknesses'">
+                                <span class="m-r" ng-style="{color: eval.score <= -1 ? 'red' : 'grey'}">
+                                    ===
+                                </span>
+                                <span class="m-r" ng-style="{color: eval.score <= -2 ? 'red' : 'grey'}">
+                                    ===
+                                </span>
+                                <span class="m-r" ng-style="{color: eval.score <= -3 ? 'red' : 'grey'}">
+                                    ===
+                                </span>
+
+                              </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                        </div>
+                      
+                        <div class="row m-b">
+                          <div class="col-lg-12" ng-show="!askAttributes && !askAttributesEval">
+                              <div class="drop-zone" data-drop="true" ng-model="reqZone"
+                                   jqyoui-droppable="{animate: true, onDrop: 'attributeDrop($index)'}">
+                                  Drop Requirements Here
+                              </div>
+                          </div>
+                        </div>
+                        
+                        <div class="row m-b">
+                          <div class="col-lg-12 text-center">
+                            <button ng-click="requestAttributesView()" class="btn btn-primary">Ask Friends For Attributes</button>
+                            <button ng-click="requestAttributesEvalView()" class="btn btn-primary">Ask Friends For Evaluation</button>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- ask attributes -->
+                      <div ng-show="askAttributes">
+                        
+                        <div class="row m-b" ng-show="requestedAttributesArr.length > 0">
+                          <div class="col-lg-12">
+                            <h2>Requests Sent To:</h2>
+                            <span class="provider" ng-repeat="contact in requestedAttributesArr">
+                              <div class="icon" ng-style="{'background-image':'url({{contact.avatar}})'}"></div>
+                              <div>{{contact.displayName}}</div>
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div class="row m-b">
+                          
+                          <div class="col-lg-12">
+                            <div class="drop-zone m-b" data-drop="true" ng-model="contactsZone"
+                                 jqyoui-droppable="{animate: true, onDrop: 'contactDrop($index, list.index)'}">
+                                Drop Contacts Here
+                            </div>
+                          </div>
+                          
+                          <div class="col-lg-12" ng-show="traitRequestArr.length > 0">
+                            <h2>Send Request To:</h2>
+                            <span class="provider" ng-repeat="contact in traitRequestArr" ng-click="setProvider($index)">
+                              <div class="icon" ng-style="{'background-image':'url({{contact.avatar}})'}"></div>
+                              <div>{{contact.displayName}}</div>
+                            </span>
+                          </div>
+                          
+                          <div class="col-lg-12">
+                            <form ng-submit="sendAttributesRequest(showMyReqs)" ng-show="askAttributes">
+                              <div class="checkbox checkbox-inline">
+                                <input type="checkbox" id="showAsk" ng-model="showMyReqs">
+                                <label for="showAsk">
+                                    Show My Current attributes
+                                </label>
+                              </div>
+                              <button type="submit" class="btn btn-primary">
+                                Send Requests
+                              </button>
+                            </form>
+                          </div>
+                          
+                        </div>
+                        
+                      </div>
+                      
+                      <!-- ask attributs evals -->
+                      <div ng-show="askAttributesEval">
+               
+                        <div class="row m-b" ng-show="requestedRequirementsEvalArr.length > 0">
+                          <div class="col-lg-12">
+                            <h2>Requests Sent To:</h2>
+                            <span class="provider" ng-repeat="contact in requestedRequirementsEvalArr">
+                              <div class="icon" ng-style="{'background-image':'url({{contact.avatar}})'}"></div>
+                              <div>{{contact.displayName}}</div>
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div class="row m-b">
+                          
+                          <div class="col-lg-12">
+                            <div class="drop-zone m-b" data-drop="true" ng-model="contactsZone"
+                                 jqyoui-droppable="{animate: true, onDrop: 'contactDrop($index, list.index)'}">
+                                Drop Contacts Here
+                            </div>
+                          </div>
+                          
+                          <div class="col-lg-12" ng-show="traitRequestEvalArr.length > 0">
+                            <h2>Send Request To:</h2>
+                            <span class="provider" ng-repeat="contact in traitRequestEvalArr" ng-click="setProvider($index)">
+                              <div class="icon" ng-style="{'background-image':'url({{contact.avatar}})'}"></div>
+                              <div>{{contact.displayName}}</div>
+                            </span>
+                          </div>
+                          
+                          <div class="col-lg-12">
+                            <form ng-submit="sendAttributesEvalRequest(showMyEvals)" ng-show="askAttributesEval">
+                              <div class="checkbox checkbox-inline">
+                                <input type="checkbox" id="showAsk" ng-model="showMyEvals">
+                                <label for="showAsk">
+                                    Show My Current Evaluations
+                                </label>
+                              </div>
+                              <button type="submit" class="btn btn-primary">
+                                Send Requests
+                              </button>
+                            </form>
+                          </div>
+                          
+                        </div>
+                          
+                      </div>
+                               
+                    </div>
+                 
+                </div>
+            </div>
+                    
+        </div>   
+        
+        <div class="col-lg-4">
+            <div ng-include="'/admin/app/views/shared/proposals.html'" ng-show="!askLists && !askAttributes && !askAttributesEval"></div>
+            <div ng-include="'/admin/app/views/shared/contacts.html'" ng-show="askLists || askAttributes || askAttributesEval"></div>
+        </div>
+    </div>
+</div>
